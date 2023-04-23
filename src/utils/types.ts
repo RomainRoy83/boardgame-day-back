@@ -3,6 +3,7 @@ export type CreateGameParams = {
   cover: string
   rules: string
   weight: number
+  categories: string[]
 }
 
 export type UpdateGameParams = {

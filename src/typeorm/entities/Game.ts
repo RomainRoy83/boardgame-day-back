@@ -32,7 +32,7 @@ export class Game {
 
   @ManyToMany(() => Category, (category) => category.games, {
     onDelete: "NO ACTION",
-    onUpdate: "NO ACTION",
+    onUpdate: "NO ACTION"
   })
   @JoinTable({
     name: "game_has_category",

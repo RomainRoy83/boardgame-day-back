@@ -28,10 +28,9 @@ export class GameController {
 
   @Post()
   async createGame(
-    @Body() createGameDto: CreateGameDto,
-    @Body() categoriesNames: string[],
+    @Body() createGameDto: CreateGameDto
   ) {
-    await this.gameService.createGame(createGameDto, categoriesNames)
+    await this.gameService.createGame(createGameDto)
   }
 
   @Put(":id")

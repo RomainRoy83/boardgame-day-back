@@ -3,4 +3,5 @@ export class CreateGameDto {
   cover: string
   rules: string
   weight: number
+  categories: string[]
 }
