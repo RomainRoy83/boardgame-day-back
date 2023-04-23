@@ -35,14 +35,25 @@ export class GameService {
     })
   }
 
-  async createGame(gameDetails: CreateGameParams, categoriesNames: string[]) {
-    const newGame = await this.gameRepository.create({ ...gameDetails })
-    for (let i = 0; i < categoriesNames.length; i++) {
-      const category = await this.categoryRepository.findBy({
-        category_name: categoriesNames[i],
-      })
-      newGame.categories.push(category[0])
+  async createGame(gameDetails: CreateGameParams) {
+    const gameInfo = {
+      ...gameDetails,
+      game_name: gameDetails.game_name,
+      cover: gameDetails.cover,
+      weight: gameDetails.weight,
+      rules: gameDetails.rules,
+      categories: []
     }
+    // Find and add selected categories
+    if (gameDetails.categories.length) {
+      for (const category of gameDetails.categories) {
+        const gameCategory = await this.categoryRepository.findBy({
+          category_name: category,
+        })
+        gameInfo.categories.push(gameCategory[0])
+      }
+    }
+    const newGame = await this.gameRepository.create(gameInfo)
     await this.gameRepository.save(newGame)
   }
 
