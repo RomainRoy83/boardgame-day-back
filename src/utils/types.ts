@@ -18,6 +18,10 @@ export type CreateCategoryParams = {
   category_name: string
 }
 
+export type UpdateCategoryParams = {
+  category_name: string
+}
+
 export type CreateMechanismParams = {
   mechanism_name: string
 }

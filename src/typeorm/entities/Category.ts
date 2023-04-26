@@ -6,11 +6,11 @@ export class Category {
   @PrimaryGeneratedColumn({ type: "int" })
   id: number
 
-  @Column("varchar", { nullable: false, unique: true, length: 255 })
+  @Column("varchar", { nullable: false, unique: true, length: 20 })
   category_name: string
 
   @ManyToMany(() => Game, (game) => game.categories, {
-    onDelete: "NO ACTION",
+    onDelete: "CASCADE",
     onUpdate: "NO ACTION",
   })
   games?: Game[]

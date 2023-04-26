@@ -20,10 +20,10 @@ export class CategoryController {
     return this.categoryService.findAllCategories()
   }
 
-  @Get(":id")
-  getOneCategory(@Param("id", ParseIntPipe) id: number) {
-    return this.categoryService.findOneCategory(id)
-  }
+  // @Get(":id")
+  // getOneCategory(@Param("id", ParseIntPipe) id: number) {
+  //   return this.categoryService.findOneCategory(id)
+  // }
 
   @Post()
   createCategory(@Body() createCategoryDto: CreateCategoryDto) {
