@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
-import { Category } from "../../../typeorm/entities/Category"
+import { Category } from "src/typeorm/entities/Category"
 import { Repository } from "typeorm"
-import { CreateCategoryParams } from "../../../utils/types"
+import { CreateCategoryParams, UpdateCategoryParams } from "src/utils/types"
 
 @Injectable()
 export class CategoryService {
@@ -11,24 +11,59 @@ export class CategoryService {
     private categoryRepository: Repository<Category>,
   ) {}
 
-  findAllCategories() {
-    return this.categoryRepository.find()
+  async findAllCategories() {
+    try {
+      const categoriesObjects = await this.categoryRepository.find()
+      const categoriesNames: string[] = []
+      for (let i = 0; i < categoriesObjects.length; i++) {
+        categoriesNames.push(categoriesObjects[i].category_name)
+      }
+      return categoriesNames
+    } catch (e) {
+      return `Could not retrieve categories: ${e}`;
+    }
   }
 
-  findOneCategory(id: number) {
-    return this.categoryRepository.findOneBy({ id: id })
+  // async findOneCategory(id: number) {
+  //   const categoryObject = await this.categoryRepository.findOneBy({ id: id })
+  //   return categoryObject.category_name
+  // }
+
+  async createCategory(categoryDetails: CreateCategoryParams) {
+    if (!categoryDetails.category_name.match(/[A-zÀ-ú]/)) {
+      return `Could not create category: invalid category name!`
+    }
+
+    const existingCategories = await this.findAllCategories()
+    if (existingCategories.includes(categoryDetails.category_name)) {
+      return `Could not create category: category already exists!`
+    }
+
+    try {
+      const newCategory = this.categoryRepository.create({ ...categoryDetails })
+      return this.categoryRepository.save(newCategory)
+    } catch (e) {
+      return `Could not create category: ${e}`;
+    }
   }
 
-  createCategory(categoryDetails: CreateCategoryParams) {
-    const newCategory = this.categoryRepository.create({ ...categoryDetails })
-    return this.categoryRepository.save(newCategory)
-  }
+  async updateCategory(id: number, categoryDetails: UpdateCategoryParams) {
+    if (!categoryDetails.category_name.match(/[A-zÀ-ú]/)) {
+      return `Could not update category ${id}: invalid category name!`
+    }
 
-  updateCategory(id: number, categoryDetails: CreateCategoryParams) {
-    return this.categoryRepository.update({ id }, { ...categoryDetails })
+    try {
+      return this.categoryRepository.update({ id }, { ...categoryDetails })
+    } catch (e) {
+      return `Could not update category ${id}:  ${e}`;
+    }
   }
 
   deleteCategory(id: number) {
-    return this.categoryRepository.delete({ id })
+    try {
+      return this.categoryRepository.delete({ id })
+    } catch (e) {
+      return `Could not delete category ${id}: ${e}`
+    }
   }
 }
